@@ -8,7 +8,7 @@ const secretoParaFirmas="secreto-secretisimo" // Nunca aquí. En .env mejor.
 const app = express();
 app.use(cookieParser(secretoParaFirmas));
 
-const middlewareFormularios = express.urlencoded({extended: true})
+const middlewareFormularios = express.urlencoded({extended: true}) // Se os formularios incluen arquivos, empregar multer.
 
 app.get("/", (peticion,resposta)=>{
 
@@ -28,13 +28,13 @@ app.get("/", (peticion,resposta)=>{
     resposta.cookie("ultimaVisita", agora)
 
     resposta.cookie("secretisimo", 42, {
+        secure: true,
         httpOnly: true,
         sameSite: "strict",
-        secure: true,
         domain: "localhost",
         path: "/",
         signed: true,
-        maxAge: 3*60, // 10 minutos
+        maxAge: 3*60, // 3 minutos
     })
 
     resposta.send(`
@@ -55,8 +55,6 @@ app.get("/", (peticion,resposta)=>{
 })
 
 app.post("/", middlewareFormularios, (peticion,resposta)=>{
-
-    let nomeDoVisitante = ""
 
     if ( peticion.body.nome ) resposta.cookie("nome", peticion.body.nome                                                                                            )
 
